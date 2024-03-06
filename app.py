@@ -3,7 +3,7 @@ import pandas as pd
 import PyPDF2
 from PyPDF2.generic import NameObject
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # Google Sheets API setup
 sheet_id = "1OySSaM59h61PQdcAtwGfZrnNQSGj73MP1aOZ1tg6YcQ"
@@ -81,5 +81,5 @@ def index():
 
     return render_template("index.html")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     app.run(debug=True)
