@@ -23,8 +23,9 @@ df = pd.read_csv(url)
 
 
 
-# Get the user's downloads folder
-downloads_folder = os.path.expanduser("~" + os.sep + "Downloads")
+# Get a temporary directory
+temp_folder = Path(tempfile.gettempdir())
+
 
 def download_pdf(url):
   response = requests.get(url)
@@ -101,12 +102,12 @@ def index():
                 input_pdf_url = "https://github.com/ayanhussain81/PdfEditing/raw/main/input.pdf"
                 input_pdf_content = download_pdf(input_pdf_url)
 
-                local_pdf_path = os.path.join(downloads_folder, output_pdf_path)
-
+                # local_pdf_path = os.path.join(downloads_folder, output_pdf_path)
+                filled_pdf_path = temp_folder / output_pdf_path
                 # output_pdf_path =  downloads_folder / output_pdf_path
  
-                fill_pdf(input_pdf_content, output_pdf_path, row_data, target_page_index, checkbox_data)
-                return send_file(output_pdf_path, as_attachment=True)
+                fill_pdf(input_pdf_content, filled_pdf_path, row_data, target_page_index, checkbox_data)
+                return send_file(filled_pdf_path, as_attachment=True)
 
     return render_template("index.html")
 
