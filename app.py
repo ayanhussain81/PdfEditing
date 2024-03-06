@@ -104,8 +104,8 @@ def index():
                 local_pdf_path = os.path.join(downloads_folder, output_pdf_path)
 
                 # output_pdf_path =  downloads_folder / output_pdf_path
-
-                fill_pdf(input_pdf_content, local_pdf_path, row_data, target_page_index, checkbox_data)
+ 
+                fill_pdf(input_pdf_content, output_pdf_path, row_data, target_page_index, checkbox_data)
                 return send_file(output_pdf_path, as_attachment=True)
 
     return render_template("index.html")
