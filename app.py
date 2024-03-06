@@ -5,6 +5,9 @@ from PyPDF2.generic import NameObject
 import requests
 from io import BytesIO
 import tempfile
+import os
+from pathlib import Path
+
 
 
 
@@ -17,6 +20,11 @@ url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sh
 
 # Now you can use the 'url' variable to read the CSV into a Pandas DataFrame
 df = pd.read_csv(url)
+
+
+
+# Get the user's downloads folder
+downloads_folder = Path.home() / "Downloads"
 
 def download_pdf(url):
   response = requests.get(url)
@@ -91,7 +99,7 @@ def index():
                     row_data[column] = row[column_index]
                 input_pdf_url = "https://github.com/ayanhussain81/PdfEditing/raw/main/input.pdf"
                 input_pdf_content = download_pdf(input_pdf_url)
-
+                output_pdf_path =  downloads_folder / output_pdf_path
                 fill_pdf(input_pdf_content, output_pdf_path, row_data, target_page_index, checkbox_data)
                 return send_file(output_pdf_path, as_attachment=True)
 
