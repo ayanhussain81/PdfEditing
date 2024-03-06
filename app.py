@@ -2,6 +2,11 @@ from flask import Flask, render_template, request, send_file
 import pandas as pd
 import PyPDF2
 from PyPDF2.generic import NameObject
+import requests
+from io import BytesIO
+import tempfile
+
+
 
 app = Flask(__name__)
 
@@ -12,6 +17,15 @@ url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sh
 
 # Now you can use the 'url' variable to read the CSV into a Pandas DataFrame
 df = pd.read_csv(url)
+
+def download_pdf(url):
+  response = requests.get(url)
+  if response.status_code == 200:
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+      temp_file.write(response.content)
+      return temp_file.name
+  else:
+    raise Exception(f"Failed to download PDF from {url}")
 
 # PDF filling function
 def fill_pdf(input_pdf_path, output_pdf_path, field_data, target_page_index, checkbox_data):
@@ -75,8 +89,10 @@ def index():
                 output_pdf_path = f"{row['First Name']}_{row['Last Name']}.pdf"
                 for column_index, column in enumerate(headers):
                     row_data[column] = row[column_index]
+                input_pdf_url = "https://github.com/ayanhussain81/PdfEditing/raw/main/input.pdf"
+                input_pdf_content = download_pdf(input_pdf_url)
 
-                fill_pdf("input.pdf", output_pdf_path, row_data, target_page_index, checkbox_data)
+                fill_pdf(input_pdf_content, output_pdf_path, row_data, target_page_index, checkbox_data)
                 return send_file(output_pdf_path, as_attachment=True)
 
     return render_template("index.html")
